@@ -105,7 +105,18 @@ const Index = () => {
           <WordCard {...sampleWord} />
         </div>
         <div className="flex justify-center mb-8">
-          <Button className="mr-4">开始学习</Button>
+          <Button className="mr-4" asChild>
+            <a href="/user">用户面板</a>
+          </Button>
+          <Button className="mr-4" asChild>
+            <a href="/learn">开始学习</a>
+          </Button>
+          <Button className="mr-4" asChild>
+            <a href="/progress">查看进度</a>
+          </Button>
+          <Button variant="outline" className="mr-4" asChild>
+            <a href="/admin">管理员面板</a>
+          </Button>
           <Dialog open={showWordDialog} onOpenChange={setShowWordDialog}>
             <DialogTrigger asChild>
               <Button variant="outline">
