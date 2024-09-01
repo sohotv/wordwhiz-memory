@@ -3,12 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Trash2, Edit, Search, Users, BookOpen, BarChart3, Settings } from "lucide-react";
+import { PlusCircle, Trash2, Edit, Search, Users, BookOpen, BarChart3, Settings, User, Clock, Star } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 const AdminDashboard = () => {
   const [newWord, setNewWord] = useState('');
@@ -20,6 +23,7 @@ const AdminDashboard = () => {
     { id: 3, word: 'Ubiquitous', definition: 'Present, appearing, or found everywhere.' },
   ]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [userSearchTerm, setUserSearchTerm] = useState('');
 
   const handleAddWord = () => {
     if (newWord.trim() && newDefinition.trim()) {
@@ -73,6 +77,29 @@ const AdminDashboard = () => {
     { name: 'Week 3', users: 1000 },
     { name: 'Week 4', users: 1200 },
   ];
+
+  const userLevels = [
+    { name: 'Beginner', value: 300 },
+    { name: 'Intermediate', value: 500 },
+    { name: 'Advanced', value: 300 },
+    { name: 'Expert', value: 100 },
+  ];
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+  const users = [
+    { id: 1, name: 'Alice Johnson', email: 'alice@example.com', level: 'Intermediate', wordsLearned: 250, streak: 15 },
+    { id: 2, name: 'Bob Smith', email: 'bob@example.com', level: 'Advanced', wordsLearned: 500, streak: 30 },
+    { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', level: 'Beginner', wordsLearned: 100, streak: 7 },
+    { id: 4, name: 'Diana Ross', email: 'diana@example.com', level: 'Expert', wordsLearned: 1000, streak: 60 },
+    { id: 5, name: 'Edward Norton', email: 'edward@example.com', level: 'Intermediate', wordsLearned: 300, streak: 20 },
+  ];
+
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
+    user.level.toLowerCase().includes(userSearchTerm.toLowerCase())
+  );
 
   return (
     <div className="container mx-auto p-4">
@@ -202,7 +229,7 @@ const AdminDashboard = () => {
           </Card>
         </TabsContent>
         <TabsContent value="users">
-          <Card>
+          <Card className="mb-6">
             <CardHeader>
               <CardTitle>User Statistics</CardTitle>
             </CardHeader>
@@ -221,25 +248,109 @@ const AdminDashboard = () => {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-        <TabsContent value="analytics">
           <Card>
             <CardHeader>
-              <CardTitle>User Growth</CardTitle>
+              <CardTitle>User List</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={userProgressData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="users" fill="#8884d8" />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="flex justify-between items-center mb-4">
+                <Input
+                  placeholder="Search users..."
+                  value={userSearchTerm}
+                  onChange={(e) => setUserSearchTerm(e.target.value)}
+                  className="max-w-sm"
+                />
+              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>Level</TableHead>
+                    <TableHead>Words Learned</TableHead>
+                    <TableHead>Streak</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredUsers.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell className="flex items-center space-x-2">
+                        <Avatar>
+                          <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.name}`} />
+                          <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{user.name}</p>
+                          <p className="text-sm text-gray-500">{user.email}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{user.level}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <Progress value={(user.wordsLearned / 1000) * 100} className="w-[60px] mr-2" />
+                          <span>{user.wordsLearned}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <Star className="h-4 w-4 text-yellow-400 mr-1" />
+                          <span>{user.streak} days</span>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+        <TabsContent value="analytics">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>User Growth</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={userProgressData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="users" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>User Levels Distribution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={userLevels}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {userLevels.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
