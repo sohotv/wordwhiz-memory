@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Volume2, ThumbsUp, ThumbsDown, ArrowLeft, ArrowRight, Bookmark, Star, HelpCircle, Flag, LightBulb } from "lucide-react";
+import { Volume2, ThumbsUp, ThumbsDown, ArrowLeft, ArrowRight, Bookmark, Star, HelpCircle, Flag, Lightbulb } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -191,7 +191,7 @@ const LearnWords = () => {
           </div>
           <div className="flex justify-between mt-4">
             <Button variant="ghost" onClick={() => setShowHint(true)}>
-              <LightBulb className="mr-2 h-4 w-4" /> 提示
+              <Lightbulb className="mr-2 h-4 w-4" /> 提示
             </Button>
             <Button variant="ghost" onClick={toggleMarkForReview}>
               <Flag className={`mr-2 h-4 w-4 ${markedForReview.has(currentWord.word) ? 'text-red-500' : ''}`} />
