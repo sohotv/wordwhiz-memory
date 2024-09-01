@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { HomeIcon, UserIcon, ShieldIcon, BookOpenIcon, BarChartIcon, RepeatIcon } from "lucide-react";
+import { HomeIcon, UserIcon, ShieldIcon, BookOpenIcon, BarChartIcon, RepeatIcon, Settings, Folder } from "lucide-react";
 
 const Index = lazy(() => import("./pages/Index.jsx"));
 const UserDashboard = lazy(() => import("./pages/UserDashboard.jsx"));
@@ -13,39 +13,57 @@ const Progress = lazy(() => import("./pages/Progress.jsx"));
  */
 export const navItems = [
   {
-    title: "Home",
+    title: "首页",
     to: "/",
     icon: <HomeIcon className="h-4 w-4" />,
     page: Index,
   },
   {
-    title: "User Dashboard",
-    to: "/user",
-    icon: <UserIcon className="h-4 w-4" />,
-    page: UserDashboard,
+    title: "学习中心",
+    icon: <Folder className="h-4 w-4" />,
+    children: [
+      {
+        title: "学习单词",
+        to: "/learn",
+        icon: <BookOpenIcon className="h-4 w-4" />,
+        page: LearnWords,
+      },
+      {
+        title: "复习单词",
+        to: "/review",
+        icon: <RepeatIcon className="h-4 w-4" />,
+        page: ReviewWords,
+      },
+    ],
   },
   {
-    title: "Admin Dashboard",
+    title: "个人中心",
+    icon: <Folder className="h-4 w-4" />,
+    children: [
+      {
+        title: "用户仪表板",
+        to: "/user",
+        icon: <UserIcon className="h-4 w-4" />,
+        page: UserDashboard,
+      },
+      {
+        title: "学习进度",
+        to: "/progress",
+        icon: <BarChartIcon className="h-4 w-4" />,
+        page: Progress,
+      },
+    ],
+  },
+  {
+    title: "管理中心",
     to: "/admin",
     icon: <ShieldIcon className="h-4 w-4" />,
     page: AdminDashboard,
   },
   {
-    title: "Learn Words",
-    to: "/learn",
-    icon: <BookOpenIcon className="h-4 w-4" />,
-    page: LearnWords,
-  },
-  {
-    title: "Review Words",
-    to: "/review",
-    icon: <RepeatIcon className="h-4 w-4" />,
-    page: ReviewWords,
-  },
-  {
-    title: "Progress",
-    to: "/progress",
-    icon: <BarChartIcon className="h-4 w-4" />,
-    page: Progress,
+    title: "设置",
+    to: "/settings",
+    icon: <Settings className="h-4 w-4" />,
+    page: null, // 假设设置页面还未创建
   },
 ];
