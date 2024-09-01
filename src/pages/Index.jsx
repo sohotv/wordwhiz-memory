@@ -2,11 +2,19 @@ import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Brain, ListChecks, Settings, BarChart, Repeat, Volume2, Star, PlusCircle, ArrowRight, Zap, Trophy, Calendar } from "lucide-react";
+import { BookOpen, Brain, ListChecks, Settings, BarChart, Repeat, Volume2, Star, PlusCircle, ArrowRight, Zap, Trophy, Calendar, ChevronRight, Bookmark, Clock, Target } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+
+const QuickAccessButton = ({ icon, label, onClick }) => (
+  <Button variant="outline" className="flex flex-col items-center p-4 h-auto" onClick={onClick}>
+    {icon}
+    <span className="mt-2 text-sm">{label}</span>
+  </Button>
+);
 
 const FeatureCard = ({ title, description, icon, onClick }) => (
   <Card className="w-full cursor-pointer transition-all hover:shadow-lg" onClick={onClick}>
@@ -26,7 +34,7 @@ const WordCard = ({ word, pronunciation, meaning, example }) => {
   const [showMeaning, setShowMeaning] = useState(false);
 
   return (
-    <Card className="w-full mb-4">
+    <Card className="w-full h-full flex flex-col">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>{word}</span>
@@ -36,7 +44,7 @@ const WordCard = ({ word, pronunciation, meaning, example }) => {
         </CardTitle>
         <CardDescription>{pronunciation}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-grow flex flex-col justify-between">
         <Button 
           variant="outline" 
           className="w-full mb-2"
@@ -45,10 +53,10 @@ const WordCard = ({ word, pronunciation, meaning, example }) => {
           {showMeaning ? "隐藏释义" : "显示释义"}
         </Button>
         {showMeaning && (
-          <>
+          <div className="mt-2">
             <p className="font-semibold mb-2">{meaning}</p>
             <p className="text-sm text-gray-600">{example}</p>
-          </>
+          </div>
         )}
       </CardContent>
     </Card>
@@ -118,6 +126,18 @@ const Index = () => {
       meaning: "Present, appearing, or found everywhere.",
       example: "Mobile phones have become ubiquitous in modern society.",
     },
+    {
+      word: "Eloquent",
+      pronunciation: "/ˈeləkwənt/",
+      meaning: "Fluent or persuasive in speaking or writing.",
+      example: "Her eloquent speech moved the audience to tears.",
+    },
+    {
+      word: "Enigma",
+      pronunciation: "/iˈniɡmə/",
+      meaning: "A person or thing that is mysterious, puzzling, or difficult to understand.",
+      example: "The Voynich manuscript remains an enigma to scholars.",
+    },
   ];
 
   const handleAddWord = () => {
@@ -155,11 +175,45 @@ const Index = () => {
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="features" className="mb-8">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="features">功能</TabsTrigger>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <QuickAccessButton icon={<Brain className="h-6 w-6" />} label="开始学习" onClick={() => navigate("/learn")} />
+        <QuickAccessButton icon={<ListChecks className="h-6 w-6" />} label="复习单词" onClick={() => navigate("/review")} />
+        <QuickAccessButton icon={<Bookmark className="h-6 w-6" />} label="收藏夹" onClick={() => navigate("/user")} />
+        <QuickAccessButton icon={<BarChart className="h-6 w-6" />} label="学习统计" onClick={() => navigate("/progress")} />
+      </div>
+
+      <Tabs defaultValue="words" className="mb-8">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="words">今日单词</TabsTrigger>
+          <TabsTrigger value="features">功能</TabsTrigger>
+          <TabsTrigger value="progress">进度概览</TabsTrigger>
         </TabsList>
+        <TabsContent value="words">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl flex items-center">
+                <Zap className="mr-2 h-6 w-6" />
+                今日单词
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Carousel className="w-full max-w-xs mx-auto">
+                <CarouselContent>
+                  {sampleWords.map((word, index) => (
+                    <CarouselItem key={index}>
+                      <WordCard {...word} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+              <Button className="w-full mt-4" onClick={() => navigate("/learn")}>
+                开始学习 <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
         <TabsContent value="features">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
@@ -171,20 +225,37 @@ const Index = () => {
             ))}
           </div>
         </TabsContent>
-        <TabsContent value="words">
+        <TabsContent value="progress">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl flex items-center">
-                <Zap className="mr-2 h-6 w-6" />
-                今日单词
-              </CardTitle>
+              <CardTitle>学习进度概览</CardTitle>
             </CardHeader>
             <CardContent>
-              {sampleWords.map((word, index) => (
-                <WordCard key={index} {...word} />
-              ))}
-              <Button className="w-full" onClick={() => navigate("/learn")}>
-                开始学习 <ArrowRight className="ml-2 h-4 w-4" />
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center">
+                    <Clock className="h-5 w-5 mr-2" />
+                    总学习时间
+                  </span>
+                  <span className="font-semibold">24小时</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center">
+                    <BookOpen className="h-5 w-5 mr-2" />
+                    已学单词
+                  </span>
+                  <span className="font-semibold">500词</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center">
+                    <Target className="h-5 w-5 mr-2" />
+                    掌握程度
+                  </span>
+                  <span className="font-semibold">75%</span>
+                </div>
+              </div>
+              <Button className="w-full mt-4" variant="outline" onClick={() => navigate("/progress")}>
+                查看详细统计 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </CardContent>
           </Card>
