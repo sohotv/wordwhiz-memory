@@ -13,37 +13,37 @@ const Progress = lazy(() => import("./pages/Progress.jsx"));
  */
 export const navItems = [
   {
-    title: "Home",
+    title: "首页",
     to: "/",
     icon: <HomeIcon className="h-4 w-4" />,
     page: Index,
   },
   {
-    title: "User Dashboard",
+    title: "用户中心",
     to: "/user",
     icon: <UserIcon className="h-4 w-4" />,
     page: UserDashboard,
   },
   {
-    title: "Admin Dashboard",
+    title: "管理后台",
     to: "/admin",
     icon: <ShieldIcon className="h-4 w-4" />,
     page: AdminDashboard,
   },
   {
-    title: "Learn Words",
+    title: "学习单词",
     to: "/learn",
     icon: <BookOpenIcon className="h-4 w-4" />,
     page: LearnWords,
   },
   {
-    title: "Review Words",
+    title: "复习单词",
     to: "/review",
     icon: <RepeatIcon className="h-4 w-4" />,
     page: ReviewWords,
   },
   {
-    title: "Progress",
+    title: "学习进度",
     to: "/progress",
     icon: <BarChartIcon className="h-4 w-4" />,
     page: Progress,
