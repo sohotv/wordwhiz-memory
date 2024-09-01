@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Brain, ListChecks, Settings, BarChart, Repeat, Volume2, Star, PlusCircle, ArrowRight, Zap } from "lucide-react";
+import { BookOpen, Brain, ListChecks, Settings, BarChart, Repeat, Volume2, Star, PlusCircle, ArrowRight, Zap, Trophy, Calendar } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const FeatureCard = ({ title, description, icon, onClick }) => (
   <Card className="w-full cursor-pointer transition-all hover:shadow-lg" onClick={onClick}>
@@ -141,35 +142,54 @@ const Index = () => {
             <span className="text-lg font-semibold">15/20 词</span>
           </div>
           <Progress value={75} className="w-full h-2" />
+          <div className="mt-4 flex justify-between items-center">
+            <div className="flex items-center">
+              <Trophy className="h-5 w-5 text-yellow-500 mr-2" />
+              <span>连续学习: 7天</span>
+            </div>
+            <div className="flex items-center">
+              <Calendar className="h-5 w-5 text-blue-500 mr-2" />
+              <span>本周学习: 5/7天</span>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {features.map((feature, index) => (
-          <FeatureCard 
-            key={index} 
-            {...feature} 
-            onClick={() => navigate(feature.route)}
-          />
-        ))}
-      </div>
-
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="text-2xl flex items-center">
-            <Zap className="mr-2 h-6 w-6" />
-            今日单词
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {sampleWords.map((word, index) => (
-            <WordCard key={index} {...word} />
-          ))}
-          <Button className="w-full" onClick={() => navigate("/learn")}>
-            开始学习 <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </CardContent>
-      </Card>
+      <Tabs defaultValue="features" className="mb-8">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="features">功能</TabsTrigger>
+          <TabsTrigger value="words">今日单词</TabsTrigger>
+        </TabsList>
+        <TabsContent value="features">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, index) => (
+              <FeatureCard 
+                key={index} 
+                {...feature} 
+                onClick={() => navigate(feature.route)}
+              />
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="words">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl flex items-center">
+                <Zap className="mr-2 h-6 w-6" />
+                今日单词
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {sampleWords.map((word, index) => (
+                <WordCard key={index} {...word} />
+              ))}
+              <Button className="w-full" onClick={() => navigate("/learn")}>
+                开始学习 <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       <div className="flex justify-between mb-8">
         <Dialog open={showWordDialog} onOpenChange={setShowWordDialog}>
