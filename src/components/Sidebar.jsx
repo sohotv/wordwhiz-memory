@@ -1,45 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronRight, LogOut } from "lucide-react";
+import { HomeIcon, UserIcon, ShieldIcon, BookOpenIcon, BarChartIcon, Settings } from "lucide-react";
 import { navItems } from "@/nav-items";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-
-const NavItem = ({ item, depth = 0 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  if (item.children) {
-    return (
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger className="flex items-center w-full p-2 hover:bg-gray-200">
-          {item.icon}
-          <span className="ml-2 flex-1">{item.title}</span>
-          {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          {item.children.map((child) => (
-            <NavItem key={child.to} item={child} depth={depth + 1} />
-          ))}
-        </CollapsibleContent>
-      </Collapsible>
-    );
-  }
-
-  return (
-    <NavLink
-      to={item.to}
-      className={({ isActive }) =>
-        `flex items-center p-2 ${depth > 0 ? 'pl-8' : ''} ${
-          isActive ? 'bg-primary text-primary-foreground' : 'hover:bg-gray-200'
-        }`
-      }
-    >
-      {item.icon}
-      <span className="ml-2">{item.title}</span>
-    </NavLink>
-  );
-};
 
 const Sidebar = () => {
   return (
@@ -55,13 +19,27 @@ const Sidebar = () => {
         </div>
       </div>
       <h1 className="text-2xl font-bold mb-6">词汇大师</h1>
-      <nav className="flex-1 overflow-y-auto">
+      <nav className="flex-1">
         {navItems.map((item) => (
-          <NavItem key={item.title} item={item} />
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) =>
+              `flex items-center p-2 mb-2 ${
+                isActive ? 'bg-primary text-primary-foreground' : 'hover:bg-gray-200'
+              }`
+            }
+          >
+            {item.icon}
+            <span className="ml-2">{item.title}</span>
+          </NavLink>
         ))}
       </nav>
-      <Button variant="outline" className="mt-auto">
-        <LogOut className="mr-2 h-4 w-4" />
+      <Button variant="outline" className="mt-auto mb-2">
+        <Settings className="mr-2 h-4 w-4" />
+        设置
+      </Button>
+      <Button variant="outline">
         登出
       </Button>
     </div>
