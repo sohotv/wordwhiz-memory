@@ -1,10 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Brain, ListChecks, Settings, BarChart, Repeat, Volume2, Star, PlusCircle, ArrowRight } from "lucide-react";
+import { BookOpen, Brain, ListChecks, Settings, BarChart, Repeat, Volume2, Star, PlusCircle, ArrowRight, Zap } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
+import { Progress } from "@/components/ui/progress";
 
 const FeatureCard = ({ title, description, icon, onClick }) => (
   <Card className="w-full cursor-pointer transition-all hover:shadow-lg" onClick={onClick}>
@@ -75,7 +76,7 @@ const Index = () => {
       title: "测试模式",
       description: "多种题型测试，巩固您的单词记忆。",
       icon: <ListChecks className="h-6 w-6" />,
-      route: "/learn",
+      route: "/review",
     },
     {
       title: "进度统计",
@@ -87,7 +88,7 @@ const Index = () => {
       title: "复习计划",
       description: "智能安排复习时间，提高记忆效果。",
       icon: <Repeat className="h-6 w-6" />,
-      route: "/user",
+      route: "/review",
     },
     {
       title: "收藏夹",
@@ -126,11 +127,23 @@ const Index = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-4xl font-bold mb-8">欢迎回来，用户名</h1>
-      <p className="text-xl text-gray-600 mb-8">
-        今天是您学习的第 <span className="font-bold">30</span> 天。继续保持！
-      </p>
+    <div className="max-w-6xl mx-auto p-4">
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="text-3xl">欢迎回来，用户名</CardTitle>
+          <CardDescription>
+            今天是您学习的第 <span className="font-bold">30</span> 天。继续保持！
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-lg font-semibold">今日学习进度</span>
+            <span className="text-lg font-semibold">15/20 词</span>
+          </div>
+          <Progress value={75} className="w-full h-2" />
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {features.map((feature, index) => (
           <FeatureCard 
@@ -140,15 +153,24 @@ const Index = () => {
           />
         ))}
       </div>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">今日单词</h2>
-        {sampleWords.map((word, index) => (
-          <WordCard key={index} {...word} />
-        ))}
-        <Button className="w-full" onClick={() => navigate("/learn")}>
-          开始学习 <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="text-2xl flex items-center">
+            <Zap className="mr-2 h-6 w-6" />
+            今日单词
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {sampleWords.map((word, index) => (
+            <WordCard key={index} {...word} />
+          ))}
+          <Button className="w-full" onClick={() => navigate("/learn")}>
+            开始学习 <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </CardContent>
+      </Card>
+
       <div className="flex justify-between mb-8">
         <Dialog open={showWordDialog} onOpenChange={setShowWordDialog}>
           <DialogTrigger asChild>
@@ -167,11 +189,12 @@ const Index = () => {
               value={newWord}
               onChange={(e) => setNewWord(e.target.value)}
               placeholder="输入新单词"
+              className="mb-4"
             />
-            <Button onClick={handleAddWord}>添加</Button>
+            <Button onClick={handleAddWord} className="w-full">添加</Button>
           </DialogContent>
         </Dialog>
-        <Button variant="outline">
+        <Button variant="outline" onClick={() => navigate("/user")}>
           <Settings className="mr-2 h-4 w-4" /> 设置
         </Button>
       </div>
