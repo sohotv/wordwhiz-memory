@@ -10,7 +10,7 @@ import UserSidebar from './components/UserSidebar';
 
 const queryClient = new QueryClient();
 
-// 懒加载路由组件
+// Lazy load components
 const Login = lazy(() => import('./pages/Login'));
 const UserDashboard = lazy(() => import('./pages/UserDashboard'));
 const LearnWords = lazy(() => import('./pages/LearnWords'));
@@ -20,6 +20,7 @@ const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const UserManagement = lazy(() => import('./pages/UserManagement'));
 const WordManagement = lazy(() => import('./pages/WordManagement'));
 const Statistics = lazy(() => import('./pages/Statistics'));
+const SystemSettings = lazy(() => import('./pages/SystemSettings'));
 
 const App = () => {
   return (
@@ -33,19 +34,14 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/admin/*" element={
                   <ProtectedRoute requiredRole="admin">
-                    <div className="flex">
-                      <AdminSidebar />
-                      <main className="flex-1 p-8 overflow-auto">
-                        <Routes>
-                          <Route index element={<AdminDashboard />} />
-                          <Route path="users" element={<UserManagement />} />
-                          <Route path="words" element={<WordManagement />} />
-                          <Route path="statistics" element={<Statistics />} />
-                        </Routes>
-                      </main>
-                    </div>
+                    <AdminDashboard />
                   </ProtectedRoute>
-                } />
+                }>
+                  <Route index element={<Statistics />} />
+                  <Route path="users" element={<UserManagement />} />
+                  <Route path="words" element={<WordManagement />} />
+                  <Route path="settings" element={<SystemSettings />} />
+                </Route>
                 <Route path="/*" element={
                   <ProtectedRoute>
                     <div className="flex">
