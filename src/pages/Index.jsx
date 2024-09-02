@@ -111,38 +111,38 @@ const Index = () => {
     {
       word: "Serendipity",
       pronunciation: "/ˌserənˈdipəti/",
-      meaning: "The occurrence and development of events by chance in a happy or beneficial way.",
-      example: "The discovery of penicillin was a serendipity that revolutionized medicine.",
+      meaning: "意外发现珍奇事物的能力；机缘巧合",
+      example: "发现青霉素是一个改变医学的机缘巧合。",
     },
     {
       word: "Ephemeral",
       pronunciation: "/əˈfem(ə)rəl/",
-      meaning: "Lasting for a very short time.",
-      example: "The ephemeral nature of fashion trends makes it hard to keep up.",
+      meaning: "短暂的，瞬息的",
+      example: "时尚潮流的短暂性使得跟上潮流变得困难。",
     },
     {
       word: "Ubiquitous",
       pronunciation: "/yo͞oˈbikwədəs/",
-      meaning: "Present, appearing, or found everywhere.",
-      example: "Mobile phones have become ubiquitous in modern society.",
+      meaning: "无处不在的，普遍存在的",
+      example: "在现代社会中，手机已经无处不在。",
     },
     {
       word: "Eloquent",
       pronunciation: "/ˈeləkwənt/",
-      meaning: "Fluent or persuasive in speaking or writing.",
-      example: "Her eloquent speech moved the audience to tears.",
+      meaning: "雄辩的，有说服力的",
+      example: "她富有说服力的演讲感动了观众。",
     },
     {
       word: "Enigma",
       pronunciation: "/iˈniɡmə/",
-      meaning: "A person or thing that is mysterious, puzzling, or difficult to understand.",
-      example: "The Voynich manuscript remains an enigma to scholars.",
+      meaning: "谜，难解之谜",
+      example: "伏尼契手稿对学者们来说仍然是个谜。",
     },
   ];
 
   const handleAddWord = () => {
-    // Logic to add new word
-    console.log("Adding new word:", newWord);
+    // 添加新单词的逻辑
+    console.log("添加新单词:", newWord);
     setNewWord("");
     setShowWordDialog(false);
   };
