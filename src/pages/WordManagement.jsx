@@ -9,7 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Pagination } from "@/components/ui/pagination";
-import { Upload, Volume2, Edit, Trash2 } from "lucide-react";
+import { Upload, Volume2, Edit, Trash2, Filter, Download } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const WordManagement = () => {
   const [words, setWords] = useState([
@@ -43,6 +45,12 @@ const WordManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [activeTab, setActiveTab] = useState('all');
+  const [filters, setFilters] = useState({
+    grade: [],
+    textbook: [],
+    vocabularyBook: [],
+    category: []
+  });
 
   const handleAddWord = () => {
     if (newWord.word && newWord.definition) {
@@ -81,11 +89,29 @@ const WordManagement = () => {
     console.log('Importing words...');
   };
 
+  const handleExportWords = () => {
+    // Implement word export logic here
+    console.log('Exporting words...');
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: prev[key].includes(value)
+        ? prev[key].filter(item => item !== value)
+        : [...prev[key], value]
+    }));
+  };
+
   const filteredWords = words.filter(word => 
     (word.word.toLowerCase().includes(searchTerm.toLowerCase()) ||
     word.definition.toLowerCase().includes(searchTerm.toLowerCase()) ||
     word.category.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (activeTab === 'all' || word.grade === activeTab)
+    (activeTab === 'all' || word.grade === activeTab) &&
+    (filters.grade.length === 0 || filters.grade.includes(word.grade)) &&
+    (filters.textbook.length === 0 || filters.textbook.includes(word.textbook)) &&
+    (filters.vocabularyBook.length === 0 || filters.vocabularyBook.includes(word.vocabularyBook)) &&
+    (filters.category.length === 0 || filters.category.includes(word.category))
   );
 
   // Pagination
@@ -95,17 +121,65 @@ const WordManagement = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const renderFilters = () => (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="ml-2">
+          <Filter className="mr-2 h-4 w-4" />
+          筛选
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h4 className="font-medium leading-none">年级</h4>
+            <div className="grid grid-cols-2 gap-2">
+              {['小学', '初中', '高中', '大学'].map((grade) => (
+                <div key={grade} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`grade-${grade}`}
+                    checked={filters.grade.includes(grade)}
+                    onCheckedChange={() => handleFilterChange('grade', grade)}
+                  />
+                  <label htmlFor={`grade-${grade}`}>{grade}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="space-y-2">
+            <h4 className="font-medium leading-none">词性</h4>
+            <div className="grid grid-cols-2 gap-2">
+              {['Noun', 'Verb', 'Adjective', 'Adverb'].map((category) => (
+                <div key={category} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`category-${category}`}
+                    checked={filters.category.includes(category)}
+                    onCheckedChange={() => handleFilterChange('category', category)}
+                  />
+                  <label htmlFor={`category-${category}`}>{category}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Add similar sections for textbook and vocabularyBook if needed */}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">词汇管理</h1>
       <div className="mb-4 flex justify-between items-center">
-        <Input
-          placeholder="搜索单词、定义或类别"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm"
-        />
-        <div className="space-x-2">
+        <div className="flex-1 mr-4">
+          <Input
+            placeholder="搜索单词、定义或类别"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="flex space-x-2">
+          {renderFilters()}
           <Dialog>
             <DialogTrigger asChild>
               <Button>添加新单词</Button>
@@ -222,6 +296,10 @@ const WordManagement = () => {
             <Upload className="mr-2 h-4 w-4" />
             导入单词
           </Button>
+          <Button variant="outline" onClick={handleExportWords}>
+            <Download className="mr-2 h-4 w-4" />
+            导出单词
+          </Button>
         </div>
       </div>
       <Card>
@@ -244,6 +322,7 @@ const WordManagement = () => {
                 <TableHead>单词</TableHead>
                 <TableHead>音标</TableHead>
                 <TableHead>定义</TableHead>
+                <TableHead>词性</TableHead>
                 <TableHead>年级</TableHead>
                 <TableHead>教材</TableHead>
                 <TableHead>词汇书</TableHead>
@@ -256,6 +335,7 @@ const WordManagement = () => {
                   <TableCell>{word.word}</TableCell>
                   <TableCell>{word.phonetic}</TableCell>
                   <TableCell>{word.definition}</TableCell>
+                  <TableCell>{word.category}</TableCell>
                   <TableCell>{word.grade}</TableCell>
                   <TableCell>{word.textbook}</TableCell>
                   <TableCell>{word.vocabularyBook}</TableCell>
